@@ -1,0 +1,94 @@
+---
+// 引越し会社の比較テーブルコンポーネント
+// companies.json のデータを受け取って比較表を描画する
+// 使い方: <ComparisonTable companies={companiesData} />
+
+// 引越し会社データの型定義
+interface Company {
+  id: string;           // 会社ID（例: "sakai"）
+  name: string;         // 会社名（例: "サカイ引越センター"）
+  description: string;  // 会社の説明
+  features: string[];   // 特徴一覧
+  rating: number;       // おすすめ度（1-5）
+  plans: { name: string; priceRange: string }[]; // プラン一覧
+  areas: string[];      // 対応エリア
+  affiliateUrl: string; // アフィリエイトリンク
+}
+
+interface Props {
+  companies: Company[];
+  title?: string;  // テーブルの見出し（省略可）
+}
+
+const { companies, title } = Astro.props;
+
+// 星評価を文字列に変換する関数
+// 例: rating=4 → "★★★★☆"
+function renderStars(rating: number): string {
+  return '★'.repeat(rating) + '☆'.repeat(5 - rating);
+}
+---
+
+{title && <h2>{title}</h2>}
+
+<div class="table-wrapper">
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>引越し会社</th>
+        <th>料金目安</th>
+        <th>対応エリア</th>
+        <th>おすすめ度</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {companies.map((company) => (
+        <tr>
+          <td>
+            <strong>{company.name}</strong>
+            <br />
+            <small class="text-muted">{company.description.slice(0, 30)}...</small>
+          </td>
+          <td class="price">
+            {/* 最安プランの料金を表示 */}
+            <strong>{company.plans[0]?.priceRange}</strong>
+            <br />
+            <small class="text-muted">{company.plans[0]?.name}</small>
+          </td>
+          <td>{company.areas.join('・')}</td>
+          <td class="stars">{renderStars(company.rating)}</td>
+          <td>
+            <a href={company.affiliateUrl || '#'} class="affiliate-btn" target="_blank" rel="nofollow noopener">
+              詳細を見る
+            </a>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .table-wrapper {
+    overflow-x: auto;
+    margin: 1.5rem 0;
+  }
+  .price strong {
+    font-size: 1rem;
+    color: var(--color-danger);
+  }
+  .stars {
+    color: var(--color-primary);
+    white-space: nowrap;
+  }
+  .text-muted {
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+  }
+  .affiliate-btn {
+    font-size: 0.8rem;
+    padding: 0.4rem 1rem;
+    white-space: nowrap;
+  }
+</style>

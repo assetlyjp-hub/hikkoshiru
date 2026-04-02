@@ -1,0 +1,46 @@
+# Cloudflare Pages への自動デプロイ
+# mainブランチへのpush時 + 毎日のスケジュール実行時にビルド&デプロイ
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+  # 毎日朝6時(JST)に自動デプロイ
+  schedule:
+    - cron: '0 21 * * *'  # UTC 21:00 = JST 06:00
+  workflow_dispatch: # 手動実行も可能
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+
+    steps:
+      # 1. リポジトリをチェックアウト
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. Node.js セットアップ
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      # 3. 依存パッケージインストール
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Astro ビルド
+      - name: Build
+        run: npm run build
+
+      # 5. Cloudflare Pages にデプロイ
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=hikkoshiru

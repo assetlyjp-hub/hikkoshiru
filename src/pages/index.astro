@@ -1,0 +1,174 @@
+---
+// トップページ
+// ヒーローセクション → 一括見積もりCTA → 料金シミュレーター → カテゴリ導線 → 最新記事
+import Base from '../layouts/Base.astro';
+import EstimateBox from '../components/EstimateBox.astro';
+import PriceSimulator from '../components/PriceSimulator.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import { getCollection } from 'astro:content';
+
+// 一括見積もりサービスのデータを読み込む
+import estimatesData from '../data/estimates.json';
+const topEstimate = estimatesData.services[0]; // SUUMOを一番上に表示
+
+// 公開済みの記事を新しい順に取得
+const allArticles = await getCollection('articles', ({ data }) => !data.draft);
+const sortedArticles = allArticles.sort(
+  (a, b) => new Date(b.data.publishedAt).getTime() - new Date(a.data.publishedAt).getTime()
+);
+---
+
+<Base
+  title="引越し費用を比較して最安値を見つけよう"
+  description="引越し費用の相場・見積もり比較・おすすめ業者をわかりやすく解説。一括見積もりで最大50%OFF。あなたの引越しをもっとお得に。"
+>
+  <!-- ヒーローセクション: サイトの顔になる部分 -->
+  <section class="hero">
+    <h1>引越し費用、<br />もっと安くなります。</h1>
+    <p>引越し会社の料金を比較して、最安値を見つけよう。<br />無料の一括見積もりで、最大50%OFFになることも。</p>
+    <div class="hero-links">
+      <a href="/estimate/" class="affiliate-btn">無料で一括見積もりする</a>
+      <a href="/companies/" class="affiliate-btn affiliate-btn-secondary">引越し会社を比較する</a>
+    </div>
+  </section>
+
+  <!-- 一括見積もりCTA: 主要収益源なので目立たせる -->
+  <EstimateBox
+    name={topEstimate.name}
+    description={topEstimate.description}
+    points={topEstimate.features}
+    affiliateUrl={topEstimate.affiliateUrl}
+    badge="おすすめNo.1"
+    maxCompanies={topEstimate.maxCompanies}
+  />
+
+  <!-- 料金シミュレーター -->
+  <PriceSimulator />
+
+  <!-- カテゴリカード: 主要コンテンツへの導線 -->
+  <section class="categories">
+    <h2 class="section-title">知りたい情報を探す</h2>
+    <div class="category-grid">
+      <a href="/companies/" class="category-card">
+        <div class="cat-icon">🏢</div>
+        <h3>引越し会社を比較</h3>
+        <p>サカイ、アート、日通など<br />大手8社を料金・サービスで徹底比較</p>
+      </a>
+      <a href="/estimate/" class="category-card">
+        <div class="cat-icon">📋</div>
+        <h3>一括見積もりサービス</h3>
+        <p>SUUMO、引越し侍、LIFULL etc.<br />無料で複数社の見積もりを比較</p>
+      </a>
+      <a href="/articles/moving-cost-average/" class="category-card">
+        <div class="cat-icon">💰</div>
+        <h3>引越し費用の相場</h3>
+        <p>距離・荷物量・時期別に<br />引越し料金の相場をまとめて紹介</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- 最新記事一覧 -->
+  <section class="latest-articles">
+    <h2 class="section-title">最新記事</h2>
+    {sortedArticles.length > 0 ? (
+      <div class="article-grid">
+        {sortedArticles.slice(0, 12).map((article) => (
+          <ArticleCard
+            title={article.data.title}
+            description={article.data.description}
+            url={`/articles/${article.id}/`}
+            date={article.data.publishedAt}
+            category={article.data.category}
+            tags={article.data.tags}
+          />
+        ))}
+      </div>
+    ) : (
+      <p class="no-articles">記事を準備中です。もうしばらくお待ちください。</p>
+    )}
+  </section>
+</Base>
+
+<style>
+  /* ヒーローセクション */
+  .hero {
+    text-align: center;
+    padding: 3rem 0;
+    background: linear-gradient(135deg, #FFF8F0, #FDEBD0);
+    border-radius: var(--radius);
+    margin-bottom: 2rem;
+    padding: 3rem 1.5rem;
+  }
+  .hero h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 1rem;
+    color: var(--color-secondary);
+  }
+  .hero p {
+    color: var(--color-text-muted);
+    margin-bottom: 1.5rem;
+  }
+  .hero-links {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* カテゴリカード */
+  .categories { margin: 3rem 0; }
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .category-card {
+    display: block;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .category-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    text-decoration: none;
+  }
+  .cat-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+  .category-card h3 { font-size: 1.15rem; margin-bottom: 0.5rem; color: var(--color-secondary); }
+  .category-card p { font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.6; }
+
+  /* セクションタイトル */
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid var(--color-primary);
+  }
+
+  /* 最新記事グリッド */
+  .latest-articles { margin: 3rem 0; }
+  .article-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+  }
+  .no-articles {
+    text-align: center;
+    color: var(--color-text-muted);
+    padding: 3rem 0;
+  }
+
+  /* スマホ対応 */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 1.5rem; }
+    .article-grid { grid-template-columns: 1fr; }
+  }
+</style>

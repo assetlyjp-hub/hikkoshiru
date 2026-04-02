@@ -1,0 +1,169 @@
+---
+// 一括見積もりサービス比較ページ
+// estimates.json から全サービスを読み込んで比較表示する
+// ここが主要な収益源（アフィリエイト）
+import Base from '../../layouts/Base.astro';
+import EstimateBox from '../../components/EstimateBox.astro';
+
+// データ読み込み
+import estimatesData from '../../data/estimates.json';
+const services = estimatesData.services;
+---
+
+<Base
+  title="引越し一括見積もりサービス比較【2026年おすすめ5選】"
+  description="SUUMO引越し・引越し侍・LIFULLなど人気の一括見積もりサービスを比較。無料で最大30社の料金を比較して、最安値の引越し業者が見つかります。"
+>
+  <section class="page-header">
+    <h1>引越し一括見積もりサービス おすすめ比較</h1>
+    <p>無料で複数の引越し会社に一括で見積もり依頼ができるサービスを比較。<br />最安値の引越し業者がすぐに見つかります。</p>
+  </section>
+
+  <!-- 一括見積もりの仕組み説明 -->
+  <section class="how-it-works">
+    <h2 class="section-title">一括見積もりサービスとは？</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>情報を入力</h3>
+        <p>引越し元・引越し先の住所、荷物量、希望日を入力（約1〜3分）</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>見積もりが届く</h3>
+        <p>複数の引越し会社から見積もり金額が届く（メールまたは電話）</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>比較して選ぶ</h3>
+        <p>料金・サービスを比較して、最適な引越し会社を選ぶ</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 各サービスの詳細 -->
+  <section class="services-list">
+    <h2 class="section-title">おすすめ一括見積もりサービス 5選</h2>
+
+    {services.map((service, index) => (
+      <EstimateBox
+        name={service.name}
+        description={service.description}
+        points={service.features}
+        affiliateUrl={service.affiliateUrl}
+        badge={index === 0 ? 'おすすめNo.1' : index === 1 ? '業者数No.1' : undefined}
+        maxCompanies={service.maxCompanies}
+      />
+    ))}
+  </section>
+
+  <!-- 比較テーブル -->
+  <section class="comparison-section">
+    <h2 class="section-title">一括見積もりサービス比較表</h2>
+    <div class="table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>サービス名</th>
+            <th>最大比較社数</th>
+            <th>特徴</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {services.map((service) => (
+            <tr>
+              <td><strong>{service.name}</strong></td>
+              <td class="max-companies">{service.maxCompanies}社</td>
+              <td>{service.features[0]}</td>
+              <td>
+                <a href={service.affiliateUrl || '#'} class="affiliate-btn" target="_blank" rel="nofollow noopener">
+                  公式サイト
+                </a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .page-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .page-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+  .page-header p {
+    color: var(--color-text-muted);
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 3rem 0 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid var(--color-primary);
+  }
+
+  /* ステップ（仕組み説明） */
+  .how-it-works {
+    margin: 2rem 0;
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+  .step {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    text-align: center;
+  }
+  .step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--color-primary);
+    color: white;
+    font-weight: 700;
+    font-size: 1.2rem;
+    border-radius: 50%;
+    margin-bottom: 0.75rem;
+  }
+  .step h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-secondary);
+  }
+  .step p {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  /* 比較テーブル */
+  .table-wrapper {
+    overflow-x: auto;
+    margin: 1rem 0;
+  }
+  .max-companies {
+    font-weight: 700;
+    color: var(--color-primary);
+    font-size: 1.1rem;
+  }
+  .affiliate-btn {
+    font-size: 0.8rem;
+    padding: 0.4rem 1rem;
+    white-space: nowrap;
+  }
+</style>

@@ -1,0 +1,40 @@
+---
+// 運営者情報ページ
+// サイトの信頼性向上のために必須のページ
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="運営者情報" description="ヒッコシルの運営者情報" noindex={true}>
+  <article class="static-page">
+    <h1>運営者情報</h1>
+
+    <table class="info-table">
+      <tbody>
+        <tr><th>サイト名</th><td>ヒッコシル</td></tr>
+        <tr><th>URL</th><td>https://hikkoshiru.com</td></tr>
+        <tr><th>運営者</th><td>合同会社一凛</td></tr>
+        <tr><th>お問い合わせ</th><td>info@hikkoshiru.com</td></tr>
+      </tbody>
+    </table>
+
+    <h2>サイトについて</h2>
+    <p>ヒッコシルは、引越し費用の相場や一括見積もりサービス、引越し会社の比較情報をわかりやすくお届けする情報サイトです。</p>
+    <p>引越しは人生で何度もあることではないからこそ、失敗したくない。そんな方のために、料金・サービス・口コミを独自に調査・比較し、客観的な情報提供を心がけています。</p>
+
+    <h2>掲載情報について</h2>
+    <p>当サイトに掲載している料金・サービス内容は、各公式サイトの情報をもとに記載しています。情報は定期的に更新していますが、最新の正確な情報は各サービスの公式サイトをご確認ください。</p>
+
+    <h2>アフィリエイトプログラムについて</h2>
+    <p>当サイトはアフィリエイトプログラムに参加しています。当サイト内のリンクを経由してサービスにお申し込みいただくと、当サイトに報酬が支払われる場合があります。ただし、ランキングや評価はアフィリエイト報酬に左右されるものではありません。</p>
+  </article>
+</Base>
+
+<style>
+  .static-page { max-width: 780px; margin: 0 auto; }
+  .static-page h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 1.5rem; }
+  .static-page h2 { font-size: 1.25rem; font-weight: 700; margin: 2rem 0 0.75rem; border-bottom: 2px solid var(--color-border); padding-bottom: 0.3rem; }
+  .static-page p { margin-bottom: 1rem; }
+  .info-table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; }
+  .info-table th { background: #FEF5ED; padding: 0.75rem 1rem; text-align: left; width: 30%; border: 1px solid var(--color-border); font-weight: 700; }
+  .info-table td { padding: 0.75rem 1rem; border: 1px solid var(--color-border); }
+</style>

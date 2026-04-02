@@ -1,0 +1,86 @@
+# 記事自動生成パイプライン
+# 毎日朝5時(JST)に実行し、新しい記事を生成 → コミット → デプロイをトリガー
+name: Auto Generate Articles
+
+on:
+  schedule:
+    - cron: '0 20 * * 1-5'  # UTC 20:00 = JST 05:00, 平日のみ
+  workflow_dispatch:
+    inputs:
+      article_type:
+        description: '生成する記事タイプ'
+        required: true
+        default: 'route'
+        type: choice
+        options:
+          - route
+          - timing
+          - household
+          - company_review
+          - route_household
+      limit:
+        description: '生成する記事数'
+        required: true
+        default: '2'
+        type: string
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
+        run: pip install anthropic
+
+      # スケジュール実行時は全タイプから順番に生成（曜日ローテーション）
+      - name: Generate articles (scheduled)
+        if: github.event_name == 'schedule'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          # 曜日ごとに異なるタイプの記事を生成
+          DOW=$(date +%u)  # 1=月, 2=火, ..., 5=金
+          case $DOW in
+            1) TYPE="route" ;;
+            2) TYPE="timing" ;;
+            3) TYPE="household" ;;
+            4) TYPE="company_review" ;;
+            5) TYPE="route_household" ;;
+          esac
+          echo "Today is day $DOW, generating: $TYPE"
+          python scripts/generate-articles.py --type $TYPE --limit 2
+
+      # 手動実行時は指定されたタイプで生成
+      - name: Generate articles (manual)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python scripts/generate-articles.py \
+            --type ${{ inputs.article_type }} \
+            --limit ${{ inputs.limit }}
+
+      # 生成された記事をコミット & プッシュ
+      - name: Commit and push
+        run: |
+          git config user.name "hikkoshiru-bot"
+          git config user.email "bot@hikkoshiru.com"
+          git add src/content/articles/
+          # 新しいファイルがあればコミット
+          if git diff --cached --quiet; then
+            echo "No new articles generated"
+          else
+            ARTICLE_COUNT=$(git diff --cached --name-only | wc -l)
+            git commit -m "auto: generate ${ARTICLE_COUNT} new article(s)"
+            git push
+          fi

@@ -1,0 +1,149 @@
+---
+// 一括見積もりCTAボックスコンポーネント
+// 記事内やページ内で目立つ「見積もりはこちら」ボタンを表示する
+// これが主要収益源なので、デザインを目立たせている
+//
+// 使い方:
+// <EstimateBox
+//   name="SUUMO引越し見積もり"
+//   description="電話番号不要！気軽に見積もり依頼できる"
+//   points={["電話番号の入力不要", "最大30社に一括見積もり"]}
+//   affiliateUrl="https://..."
+// />
+
+interface Props {
+  name: string;          // サービス名
+  description: string;   // 一言説明
+  points: string[];      // おすすめポイント（箇条書き）
+  affiliateUrl: string;  // アフィリエイトリンク
+  buttonText?: string;   // ボタンのテキスト（デフォルト: 無料で見積もりする）
+  badge?: string;        // バッジ（例: "人気No.1"）
+  maxCompanies?: number; // 最大比較社数
+}
+
+const {
+  name,
+  description,
+  points,
+  affiliateUrl,
+  buttonText = '無料で見積もりする',
+  badge,
+  maxCompanies,
+} = Astro.props;
+---
+
+<div class="estimate-box">
+  {/* バッジ: "人気No.1" などの帯 */}
+  {badge && <div class="box-badge">{badge}</div>}
+
+  <div class="box-header">
+    <h3 class="box-title">{name}</h3>
+    {maxCompanies && <span class="box-max">最大{maxCompanies}社比較</span>}
+  </div>
+
+  <p class="box-desc">{description}</p>
+
+  {/* おすすめポイント一覧 */}
+  <ul class="box-points">
+    {points.map((point) => <li>{point}</li>)}
+  </ul>
+
+  {/* CTAボタン（目立つオレンジ） */}
+  <div class="box-cta">
+    <a href={affiliateUrl || '#'} class="cta-button" target="_blank" rel="nofollow noopener">
+      {buttonText}
+    </a>
+    <p class="cta-note">※ 完全無料・営業電話なし</p>
+  </div>
+</div>
+
+<style>
+  /* 見積もりボックス全体: オレンジの太い枠線で目立たせる */
+  .estimate-box {
+    background: linear-gradient(135deg, #FFF8F0, #FFFFFF);
+    border: 3px solid var(--color-primary);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin: 2rem 0;
+    position: relative;
+  }
+  /* バッジ（左上の帯） */
+  .box-badge {
+    position: absolute;
+    top: -12px;
+    left: 1rem;
+    background: var(--color-danger);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.2rem 0.75rem;
+    border-radius: 4px;
+  }
+  .box-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .box-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--color-secondary);
+  }
+  .box-max {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    background: #FEF5ED;
+    padding: 0.1rem 0.5rem;
+    border-radius: 4px;
+  }
+  .box-desc {
+    color: var(--color-text-muted);
+    margin-bottom: 0.75rem;
+  }
+  /* おすすめポイント: チェックマーク付き */
+  .box-points {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem 0;
+  }
+  .box-points li {
+    padding: 0.3rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+  }
+  .box-points li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--color-success);
+    font-weight: 700;
+  }
+  /* CTAボタン: 大きくて目立つオレンジボタン */
+  .box-cta {
+    text-align: center;
+  }
+  .cta-button {
+    display: inline-block;
+    background: var(--color-primary);
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 1rem 2.5rem;
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 8px rgba(230, 126, 34, 0.3);
+  }
+  .cta-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(230, 126, 34, 0.5);
+    text-decoration: none;
+  }
+  .cta-note {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-top: 0.5rem;
+  }
+</style>

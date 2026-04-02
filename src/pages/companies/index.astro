@@ -1,0 +1,190 @@
+---
+// 引越し会社一覧・比較ページ
+// companies.json から全社のデータを読み込んで比較表示する
+import Base from '../../layouts/Base.astro';
+import ComparisonTable from '../../components/ComparisonTable.astro';
+import EstimateBox from '../../components/EstimateBox.astro';
+
+// データ読み込み
+import companiesData from '../../data/companies.json';
+import estimatesData from '../../data/estimates.json';
+
+const companies = companiesData.companies;
+const topEstimate = estimatesData.services[0];
+---
+
+<Base
+  title="引越し会社おすすめ比較ランキング【2026年最新】"
+  description="サカイ、アート、日通など大手引越し会社8社を料金・サービス・口コミで徹底比較。あなたにぴったりの引越し業者が見つかります。"
+>
+  <section class="page-header">
+    <h1>引越し会社おすすめ比較ランキング</h1>
+    <p>大手引越し会社8社を料金・サービス・対応エリアで徹底比較。<br />あなたの引越しに最適な業者が見つかります。</p>
+  </section>
+
+  <!-- 一括見積もりCTA -->
+  <EstimateBox
+    name={topEstimate.name}
+    description={topEstimate.description}
+    points={topEstimate.features.slice(0, 3)}
+    affiliateUrl={topEstimate.affiliateUrl}
+    badge="まずはここから"
+    maxCompanies={topEstimate.maxCompanies}
+    buttonText="無料で一括見積もりする"
+  />
+
+  <!-- 引越し会社比較テーブル -->
+  <ComparisonTable companies={companies} title="引越し会社 全8社 比較一覧" />
+
+  <!-- 各社の詳細カード -->
+  <section class="company-details">
+    <h2 class="section-title">各引越し会社の詳細</h2>
+    {companies.map((company, index) => (
+      <div class="company-card">
+        <div class="company-header">
+          <span class="company-rank">#{index + 1}</span>
+          <h3>{company.name}</h3>
+          <span class="company-rating">{'★'.repeat(company.rating)}{'☆'.repeat(5 - company.rating)}</span>
+        </div>
+        <p class="company-desc">{company.description}</p>
+
+        {/* 特徴一覧 */}
+        <div class="company-features">
+          <h4>特徴・メリット</h4>
+          <ul>
+            {company.features.map((feature) => <li>{feature}</li>)}
+          </ul>
+        </div>
+
+        {/* プラン一覧 */}
+        <div class="company-plans">
+          <h4>料金プラン</h4>
+          <table class="plan-table">
+            <thead>
+              <tr><th>プラン名</th><th>料金目安</th></tr>
+            </thead>
+            <tbody>
+              {company.plans.map((plan) => (
+                <tr>
+                  <td>{plan.name}</td>
+                  <td class="plan-price">{plan.priceRange}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="company-cta">
+          <a href={company.affiliateUrl || '#'} class="affiliate-btn" target="_blank" rel="nofollow noopener">
+            {company.name}の公式サイトへ
+          </a>
+        </div>
+      </div>
+    ))}
+  </section>
+</Base>
+
+<style>
+  .page-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .page-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+  .page-header p {
+    color: var(--color-text-muted);
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 3rem 0 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid var(--color-primary);
+  }
+
+  /* 各社詳細カード */
+  .company-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .company-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  .company-rank {
+    background: var(--color-primary);
+    color: white;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+  }
+  .company-header h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+  .company-rating {
+    color: var(--color-primary);
+    margin-left: auto;
+  }
+  .company-desc {
+    color: var(--color-text-muted);
+    margin-bottom: 1rem;
+  }
+  .company-features h4,
+  .company-plans h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--color-secondary);
+  }
+  .company-features ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1rem;
+  }
+  .company-features li {
+    padding: 0.2rem 0 0.2rem 1.5rem;
+    position: relative;
+  }
+  .company-features li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--color-success);
+    font-weight: 700;
+  }
+  .plan-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+  .plan-table th {
+    background: #f8f4f0;
+    padding: 0.5rem;
+    text-align: left;
+    font-weight: 700;
+  }
+  .plan-table td {
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .plan-price {
+    font-weight: 700;
+    color: var(--color-danger);
+  }
+  .company-cta {
+    text-align: center;
+    margin-top: 1rem;
+  }
+</style>

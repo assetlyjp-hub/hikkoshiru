@@ -1,0 +1,216 @@
+---
+// 簡易料金シミュレーター
+// 距離（km）× 荷物量（世帯タイプ）で引越し料金の概算を表示する
+// JavaScriptでインタラクティブに動作する（ページ読み込み後に動く）
+---
+
+<div class="simulator-wrapper">
+  <h2 class="simulator-title">引越し料金かんたんシミュレーター</h2>
+  <p class="simulator-desc">距離と荷物量を選ぶだけで、引越し費用のおおよその目安がわかります。</p>
+
+  <div class="simulator-form">
+    {/* 距離の選択 */}
+    <div class="form-group">
+      <label for="distance">引越し距離</label>
+      <select id="distance">
+        <option value="20">同一市区町村（〜20km）</option>
+        <option value="50">同一都道府県（〜50km）</option>
+        <option value="200">近隣の県（〜200km）</option>
+        <option value="500" selected>長距離（〜500km）</option>
+        <option value="1000">超長距離（500km以上）</option>
+      </select>
+    </div>
+
+    {/* 荷物量（世帯タイプ）の選択 */}
+    <div class="form-group">
+      <label for="household">荷物量（世帯タイプ）</label>
+      <select id="household">
+        <option value="single" selected>一人暮らし（少なめ）</option>
+        <option value="single-many">一人暮らし（多め）</option>
+        <option value="couple">二人暮らし</option>
+        <option value="family-3">家族3人</option>
+        <option value="family-4">家族4人以上</option>
+      </select>
+    </div>
+
+    {/* 時期の選択 */}
+    <div class="form-group">
+      <label for="season">引越し時期</label>
+      <select id="season">
+        <option value="off" selected>閑散期（5月〜2月）</option>
+        <option value="busy">繁忙期（3月〜4月）</option>
+      </select>
+    </div>
+
+    {/* 計算ボタン */}
+    <button id="calc-btn" class="calc-button" type="button">料金を計算する</button>
+  </div>
+
+  {/* 結果表示エリア */}
+  <div id="result" class="result-area" style="display:none;">
+    <div class="result-price">
+      <span class="result-label">概算費用</span>
+      <span class="result-value" id="result-value">--</span>
+      <span class="result-unit">円</span>
+    </div>
+    <p class="result-note">※ あくまで目安です。正確な料金は一括見積もりで確認しましょう。</p>
+    <div class="result-cta">
+      <a href="/estimate/" class="affiliate-btn">無料で一括見積もりする</a>
+    </div>
+  </div>
+</div>
+
+{/* JavaScriptで料金計算する（ページ内で動作） */}
+<script>
+  // 世帯タイプごとの基本料金（閑散期・同一市区町村の場合）
+  const basePrices: Record<string, number> = {
+    'single': 25000,       // 一人暮らし（少なめ）
+    'single-many': 35000,  // 一人暮らし（多め）
+    'couple': 55000,       // 二人暮らし
+    'family-3': 75000,     // 家族3人
+    'family-4': 95000,     // 家族4人以上
+  };
+
+  // 距離による倍率（遠いほど高くなる）
+  const distanceMultipliers: Record<string, number> = {
+    '20': 1.0,    // 〜20km: そのまま
+    '50': 1.3,    // 〜50km: 1.3倍
+    '200': 1.8,   // 〜200km: 1.8倍
+    '500': 2.5,   // 〜500km: 2.5倍
+    '1000': 3.5,  // 500km以上: 3.5倍
+  };
+
+  // 繁忙期の倍率
+  const seasonMultipliers: Record<string, number> = {
+    'off': 1.0,   // 閑散期: そのまま
+    'busy': 1.5,  // 繁忙期: 1.5倍
+  };
+
+  // 計算ボタンがクリックされたら料金を計算して表示
+  document.getElementById('calc-btn')?.addEventListener('click', () => {
+    const distance = (document.getElementById('distance') as HTMLSelectElement).value;
+    const household = (document.getElementById('household') as HTMLSelectElement).value;
+    const season = (document.getElementById('season') as HTMLSelectElement).value;
+
+    // 料金計算: 基本料金 × 距離倍率 × 時期倍率
+    const price = Math.round(
+      basePrices[household] * distanceMultipliers[distance] * seasonMultipliers[season]
+    );
+
+    // 結果を表示（1000円単位に丸めて表示）
+    const rounded = Math.round(price / 1000) * 1000;
+    const resultEl = document.getElementById('result');
+    const valueEl = document.getElementById('result-value');
+    if (resultEl && valueEl) {
+      // 幅を持たせた料金範囲で表示（±20%）
+      const low = Math.round((rounded * 0.8) / 1000) * 1000;
+      const high = Math.round((rounded * 1.2) / 1000) * 1000;
+      valueEl.textContent = `${low.toLocaleString()} 〜 ${high.toLocaleString()}`;
+      resultEl.style.display = 'block';
+    }
+  });
+</script>
+
+<style>
+  .simulator-wrapper {
+    background: var(--color-surface);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+  .simulator-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--color-secondary);
+    margin-bottom: 0.5rem;
+  }
+  .simulator-desc {
+    color: var(--color-text-muted);
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+  }
+  /* フォーム */
+  .simulator-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .form-group label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-secondary);
+  }
+  .form-group select {
+    padding: 0.6rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    background: white;
+  }
+  /* 計算ボタン */
+  .calc-button {
+    grid-column: 1 / -1;
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .calc-button:hover {
+    background: var(--color-primary-dark);
+  }
+  /* 結果エリア */
+  .result-area {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px dashed var(--color-border);
+    text-align: center;
+  }
+  .result-price {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .result-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+  }
+  .result-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-danger);
+  }
+  .result-unit {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+  .result-note {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin-bottom: 1rem;
+  }
+  .result-cta {
+    margin-top: 0.5rem;
+  }
+
+  /* スマホ対応: 1カラムに変更 */
+  @media (max-width: 768px) {
+    .simulator-form {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

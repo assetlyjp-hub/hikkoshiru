@@ -1,0 +1,135 @@
+---
+// 個別記事のレイアウト
+// Content Collections から読み込んだ記事データを受け取って表示する
+// Base.astro をラップして、記事固有のヘッダー・フッターを追加する
+import Base from './Base.astro';
+
+interface Props {
+  title: string;        // 記事タイトル
+  description: string;  // 記事の説明（meta description）
+  publishedAt: string;  // 公開日
+  updatedAt?: string;   // 更新日（任意）
+  category: string;     // カテゴリ（company / estimate / cost / tips）
+  tags: string[];       // タグ一覧
+  articleType: string;  // 記事タイプ（comparison / review / guide）
+}
+
+const { title, description, publishedAt, updatedAt, category, tags, articleType } = Astro.props;
+
+// カテゴリの日本語ラベル
+const categoryLabels: Record<string, string> = {
+  company: '引越し会社',
+  estimate: '見積もり',
+  cost: '費用・相場',
+  tips: 'お役立ち',
+};
+const catLabel = categoryLabels[category] || category;
+
+// 記事タイプの日本語ラベル
+const typeLabels: Record<string, string> = {
+  comparison: '比較',
+  review: 'レビュー',
+  guide: 'ガイド',
+};
+const typeLabel = typeLabels[articleType] || articleType;
+---
+
+<Base title={title} description={description} articleDate={publishedAt} articleModified={updatedAt}>
+  <article class="article-wrapper">
+    <!-- 記事ヘッダー: カテゴリ・日付・タイトル -->
+    <div class="article-header">
+      <div class="article-meta">
+        <span class="article-category">{catLabel}</span>
+        <span class="article-type">{typeLabel}</span>
+        <time datetime={publishedAt}>{publishedAt}</time>
+        {updatedAt && <span class="article-updated">（更新: {updatedAt}）</span>}
+      </div>
+      <h1 class="article-title">{title}</h1>
+      {tags.length > 0 && (
+        <div class="article-tags">
+          {tags.map((tag) => <span class="tag">#{tag}</span>)}
+        </div>
+      )}
+    </div>
+
+    <!-- 記事本文（slotで差し込み） -->
+    <div class="article-content">
+      <slot />
+    </div>
+
+    <!-- 記事フッター: 注意書き -->
+    <div class="article-footer">
+      <p>※ 本記事の情報は{updatedAt || publishedAt}時点のものです。最新情報は各公式サイトをご確認ください。</p>
+      <p>※ 本記事にはアフィリエイトリンクが含まれます。リンク経由でお申し込みいただくと、当サイトに報酬が支払われる場合があります。</p>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .article-wrapper {
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  .article-header {
+    margin-bottom: 2rem;
+  }
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.85rem;
+  }
+  /* カテゴリバッジ（オレンジ背景） */
+  .article-category {
+    background: var(--color-primary);
+    color: white;
+    padding: 0.15rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+  /* 記事タイプバッジ（グレー背景） */
+  .article-type {
+    background: #f1f5f9;
+    color: var(--color-text-muted);
+    padding: 0.15rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+  }
+  .article-meta time {
+    color: var(--color-text-muted);
+  }
+  .article-updated {
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+  }
+  .article-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+  /* タグ一覧 */
+  .article-tags {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .tag {
+    font-size: 0.8rem;
+    color: var(--color-primary);
+    background: #FEF5ED;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+  }
+  /* 記事フッター（注意書き） */
+  .article-footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    line-height: 1.8;
+  }
+</style>

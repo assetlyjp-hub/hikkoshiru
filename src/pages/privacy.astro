@@ -1,0 +1,51 @@
+---
+// プライバシーポリシーページ
+// アフィリエイトサイトに必須のページ
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="プライバシーポリシー" description="ヒッコシルのプライバシーポリシー" noindex={true}>
+  <article class="static-page">
+    <h1>プライバシーポリシー</h1>
+
+    <p>ヒッコシル（以下「当サイト」）は、ユーザーのプライバシーを尊重し、個人情報の保護に努めます。</p>
+
+    <h2>個人情報の収集について</h2>
+    <p>当サイトでは、お問い合わせの際にお名前やメールアドレス等の個人情報をご提供いただく場合があります。取得した個人情報は、お問い合わせへの回答にのみ使用し、それ以外の目的では利用いたしません。</p>
+
+    <h2>アクセス解析ツールについて</h2>
+    <p>当サイトでは、Googleアナリティクスを使用してアクセス情報を収集しています。データはCookieを使用して収集されますが、個人を特定する情報は含まれません。この機能はブラウザの設定でCookieを無効にすることで拒否できます。</p>
+
+    <h2>広告について</h2>
+    <p>当サイトは、第三者配信の広告サービスおよびアフィリエイトプログラムを利用しています。広告配信事業者は、ユーザーの興味に応じた広告を表示するためにCookieを使用することがあります。</p>
+    <p>当サイトが利用しているアフィリエイトプログラム：</p>
+    <ul>
+      <li>A8.net</li>
+      <li>もしもアフィリエイト</li>
+      <li>バリューコマース</li>
+      <li>アクセストレード</li>
+    </ul>
+
+    <h2>免責事項</h2>
+    <p>当サイトに掲載される情報は、可能な限り正確な情報を提供するよう努めておりますが、正確性や安全性を保証するものではありません。当サイトに掲載された内容によって生じた損害等について、当サイトは一切の責任を負いかねます。</p>
+    <p>各サービスの料金・内容は変更される場合があります。最新情報は各公式サイトをご確認ください。</p>
+
+    <h2>著作権について</h2>
+    <p>当サイトに掲載されている文章・画像等の著作権は、当サイト運営者または各権利者に帰属します。無断転載を禁じます。</p>
+
+    <h2>お問い合わせ</h2>
+    <p>プライバシーポリシーに関するお問い合わせは、運営者情報に記載の連絡先までお願いいたします。</p>
+
+    <p class="last-updated">最終更新日: 2026年4月2日</p>
+  </article>
+</Base>
+
+<style>
+  .static-page { max-width: 780px; margin: 0 auto; }
+  .static-page h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 1.5rem; }
+  .static-page h2 { font-size: 1.25rem; font-weight: 700; margin: 2rem 0 0.75rem; border-bottom: 2px solid var(--color-border); padding-bottom: 0.3rem; }
+  .static-page p { margin-bottom: 1rem; }
+  .static-page ul { margin: 0.5rem 0 1rem 1.5rem; }
+  .static-page li { margin-bottom: 0.3rem; }
+  .last-updated { font-size: 0.85rem; color: var(--color-text-muted); margin-top: 2rem; }
+</style>

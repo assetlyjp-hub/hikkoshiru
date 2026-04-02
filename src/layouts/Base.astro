@@ -1,0 +1,192 @@
+---
+// 全ページ共通のベースレイアウト
+// SEOメタタグ・OGP・構造化データ（JSON-LD）を自動設定する
+// 全ページでこのレイアウトを使うことで、SEO設定が統一される
+interface Props {
+  title: string;         // ページタイトル
+  description: string;   // ページの説明文（検索結果に表示される）
+  ogImage?: string;      // SNSシェア時の画像パス
+  articleDate?: string;   // 記事の公開日（記事ページのみ）
+  articleModified?: string; // 記事の更新日（記事ページのみ）
+  canonicalUrl?: string;  // 正規URL（重複コンテンツ対策）
+  noindex?: boolean;      // 検索エンジンに登録しない場合 true
+}
+
+const {
+  title,
+  description,
+  ogImage = '/og-default.png',
+  articleDate,
+  articleModified,
+  canonicalUrl,
+  noindex = false,
+} = Astro.props;
+
+// サイト基本情報
+const siteName = 'ヒッコシル';
+const siteUrl = 'https://hikkoshiru.com';
+const fullTitle = `${title} | ${siteName}`;
+const canonical = canonicalUrl || Astro.url.href;
+
+// グローバルCSSを読み込む
+import '../styles/global.css';
+---
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{fullTitle}</title>
+  <meta name="description" content={description} />
+  {noindex && <meta name="robots" content="noindex, nofollow" />}
+  <link rel="canonical" href={canonical} />
+
+  <!-- OGP: SNSでシェアされた時の表示設定 -->
+  <meta property="og:title" content={fullTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={`${siteUrl}${ogImage}`} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:type" content={articleDate ? 'article' : 'website'} />
+  <meta property="og:site_name" content={siteName} />
+  <meta property="og:locale" content="ja_JP" />
+
+  <!-- Twitter Card: Xでシェアされた時の表示設定 -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={fullTitle} />
+  <meta name="twitter:description" content={description} />
+
+  <!-- Google Fonts: 日本語フォント「Noto Sans JP」を読み込む -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet" />
+
+  <!-- 構造化データ（JSON-LD）: Googleの検索結果にリッチ表示するための情報 -->
+  {articleDate && (
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": title,
+      "description": description,
+      "datePublished": articleDate,
+      "dateModified": articleModified || articleDate,
+      "publisher": {
+        "@type": "Organization",
+        "name": siteName,
+        "url": siteUrl,
+      },
+    })} />
+  )}
+</head>
+<body>
+  <!-- ヘッダー: サイト上部のナビゲーション -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="site-logo">{siteName}</a>
+      <nav class="site-nav">
+        <a href="/companies/">引越し会社</a>
+        <a href="/estimate/">一括見積もり</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- メインコンテンツ: 各ページの中身がここに入る -->
+  <main class="site-main">
+    <slot />
+  </main>
+
+  <!-- フッター: サイト下部のリンク・著作権表示 -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="/privacy/">プライバシーポリシー</a>
+        <a href="/about/">運営者情報</a>
+      </div>
+      <p class="footer-copy">&copy; {new Date().getFullYear()} {siteName}</p>
+    </div>
+  </footer>
+</body>
+</html>
+
+<style>
+  /* ヘッダー: 画面上部に固定表示 */
+  .site-header {
+    background: var(--color-surface);
+    border-bottom: 2px solid var(--color-primary);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  /* サイトロゴ */
+  .site-logo {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  /* ナビゲーションリンク */
+  .site-nav {
+    display: flex;
+    gap: 1.25rem;
+  }
+  .site-nav a {
+    color: var(--color-text);
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+  .site-nav a:hover {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  /* メインコンテンツエリア */
+  .site-main {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    min-height: 60vh;
+  }
+
+  /* フッター */
+  .site-footer {
+    background: var(--color-secondary);
+    color: #94a3b8;
+    padding: 2rem 1rem;
+    margin-top: 3rem;
+  }
+  .footer-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    text-align: center;
+  }
+  .footer-links {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+  .footer-links a {
+    color: #94a3b8;
+    font-size: 0.85rem;
+  }
+  .footer-links a:hover {
+    color: white;
+  }
+  .footer-copy {
+    font-size: 0.8rem;
+  }
+
+  /* スマホ対応 */
+  @media (max-width: 768px) {
+    .site-nav { gap: 0.75rem; }
+    .site-nav a { font-size: 0.8rem; }
+  }
+</style>

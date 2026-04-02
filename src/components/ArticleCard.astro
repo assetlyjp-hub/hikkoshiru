@@ -1,0 +1,115 @@
+---
+// 記事一覧で使うカードコンポーネント
+// トップページや各カテゴリページの記事一覧で表示される
+// 使い方: <ArticleCard title="記事タイトル" url="/articles/..." ... />
+
+interface Props {
+  title: string;       // 記事タイトル
+  description: string; // 記事の概要
+  url: string;         // 記事のURL
+  date: string;        // 公開日
+  category: string;    // カテゴリ
+  tags?: string[];     // タグ一覧
+}
+
+const { title, description, url, date, category, tags = [] } = Astro.props;
+
+// カテゴリごとのラベル色
+const categoryColors: Record<string, string> = {
+  company: '#E67E22',   // 引越し会社: オレンジ
+  estimate: '#27AE60',  // 見積もり: グリーン
+  cost: '#E74C3C',      // 費用・相場: レッド
+  tips: '#3498DB',      // お役立ち: ブルー
+};
+const catColor = categoryColors[category] || '#7F8C8D';
+
+// カテゴリの日本語ラベル
+const categoryLabels: Record<string, string> = {
+  company: '引越し会社',
+  estimate: '見積もり',
+  cost: '費用・相場',
+  tips: 'お役立ち',
+};
+const catLabel = categoryLabels[category] || category;
+---
+
+<a href={url} class="article-card">
+  <div class="card-body">
+    {/* カテゴリバッジと日付 */}
+    <div class="card-meta">
+      <span class="card-category" style={`background: ${catColor}`}>{catLabel}</span>
+      <time datetime={date}>{date}</time>
+    </div>
+    {/* 記事タイトル */}
+    <h3 class="card-title">{title}</h3>
+    {/* 記事の概要 */}
+    <p class="card-desc">{description}</p>
+    {/* タグ一覧 */}
+    {tags.length > 0 && (
+      <div class="card-tags">
+        {tags.map((tag) => <span class="tag">#{tag}</span>)}
+      </div>
+    )}
+  </div>
+</a>
+
+<style>
+  .article-card {
+    display: block;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .article-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    text-decoration: none;
+  }
+  .card-body {
+    padding: 1.25rem;
+  }
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+  }
+  .card-category {
+    color: white;
+    padding: 0.1rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+  .card-meta time {
+    color: var(--color-text-muted);
+  }
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 0.5rem;
+  }
+  .card-desc {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+  .card-tags {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .tag {
+    font-size: 0.75rem;
+    color: var(--color-primary);
+    background: #FEF5ED;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+  }
+</style>

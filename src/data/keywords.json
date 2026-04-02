@@ -1,0 +1,78 @@
+{
+  "patterns": {
+    "route": {
+      "description": "主要都市間の引越しルート別記事",
+      "routes": [
+        { "from": "東京", "to": "大阪", "slug": "tokyo-osaka" },
+        { "from": "東京", "to": "名古屋", "slug": "tokyo-nagoya" },
+        { "from": "東京", "to": "福岡", "slug": "tokyo-fukuoka" },
+        { "from": "東京", "to": "札幌", "slug": "tokyo-sapporo" },
+        { "from": "東京", "to": "仙台", "slug": "tokyo-sendai" },
+        { "from": "大阪", "to": "東京", "slug": "osaka-tokyo" },
+        { "from": "大阪", "to": "福岡", "slug": "osaka-fukuoka" },
+        { "from": "大阪", "to": "名古屋", "slug": "osaka-nagoya" },
+        { "from": "大阪", "to": "広島", "slug": "osaka-hiroshima" },
+        { "from": "名古屋", "to": "東京", "slug": "nagoya-tokyo" },
+        { "from": "名古屋", "to": "大阪", "slug": "nagoya-osaka" },
+        { "from": "福岡", "to": "東京", "slug": "fukuoka-tokyo" },
+        { "from": "福岡", "to": "大阪", "slug": "fukuoka-osaka" },
+        { "from": "札幌", "to": "東京", "slug": "sapporo-tokyo" },
+        { "from": "仙台", "to": "東京", "slug": "sendai-tokyo" },
+        { "from": "広島", "to": "大阪", "slug": "hiroshima-osaka" },
+        { "from": "横浜", "to": "東京", "slug": "yokohama-tokyo" },
+        { "from": "千葉", "to": "東京", "slug": "chiba-tokyo" },
+        { "from": "埼玉", "to": "東京", "slug": "saitama-tokyo" },
+        { "from": "京都", "to": "東京", "slug": "kyoto-tokyo" }
+      ]
+    },
+    "timing": {
+      "description": "月別・時期別の引越し料金記事",
+      "months": [
+        { "label": "1月", "slug": "january" },
+        { "label": "2月", "slug": "february" },
+        { "label": "3月", "slug": "march" },
+        { "label": "4月", "slug": "april" },
+        { "label": "5月", "slug": "may" },
+        { "label": "6月", "slug": "june" },
+        { "label": "7月", "slug": "july" },
+        { "label": "8月", "slug": "august" },
+        { "label": "9月", "slug": "september" },
+        { "label": "10月", "slug": "october" },
+        { "label": "11月", "slug": "november" },
+        { "label": "12月", "slug": "december" }
+      ],
+      "seasons": [
+        { "label": "繁忙期（3月〜4月）", "slug": "busy-season" },
+        { "label": "閑散期（5月〜2月）", "slug": "off-season" }
+      ]
+    },
+    "household": {
+      "description": "世帯別の引越しガイド記事",
+      "types": [
+        { "label": "一人暮らし", "slug": "single" },
+        { "label": "二人暮らし", "slug": "couple" },
+        { "label": "家族3人", "slug": "family-3" },
+        { "label": "家族4人以上", "slug": "family-4plus" }
+      ]
+    },
+    "company_review": {
+      "description": "各引越し会社のレビュー記事",
+      "companies": ["sakai", "art", "nittsu", "arisan", "heart", "kuroneko", "ark", "proro"]
+    },
+    "route_household": {
+      "description": "ルート×世帯の掛け合わせ記事",
+      "combinations": [
+        { "from": "東京", "to": "大阪", "household": "一人暮らし", "slug": "tokyo-osaka-single" },
+        { "from": "東京", "to": "大阪", "household": "家族", "slug": "tokyo-osaka-family" },
+        { "from": "東京", "to": "名古屋", "household": "一人暮らし", "slug": "tokyo-nagoya-single" },
+        { "from": "東京", "to": "名古屋", "household": "家族", "slug": "tokyo-nagoya-family" },
+        { "from": "東京", "to": "福岡", "household": "一人暮らし", "slug": "tokyo-fukuoka-single" },
+        { "from": "大阪", "to": "東京", "household": "一人暮らし", "slug": "osaka-tokyo-single" },
+        { "from": "大阪", "to": "東京", "household": "家族", "slug": "osaka-tokyo-family" },
+        { "from": "名古屋", "to": "東京", "household": "一人暮らし", "slug": "nagoya-tokyo-single" },
+        { "from": "福岡", "to": "東京", "household": "一人暮らし", "slug": "fukuoka-tokyo-single" },
+        { "from": "札幌", "to": "東京", "household": "一人暮らし", "slug": "sapporo-tokyo-single" }
+      ]
+    }
+  }
+}
