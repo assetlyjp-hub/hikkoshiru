@@ -4,7 +4,7 @@ name: Auto Generate Articles
 
 on:
   schedule:
-    - cron: '0 20 * * 1-5'  # UTC 20:00 = JST 05:00, 平日のみ
+    - cron: '0 21 * * 1-5'  # UTC 21:00 = JST 06:00, 平日のみ
   workflow_dispatch:
     inputs:
       article_type:
