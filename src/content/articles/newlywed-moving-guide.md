@@ -3,7 +3,7 @@ title: "新婚夫婦の引越し完全ガイド｜2人暮らしスタートに�
 description: "新婚カップルの引越しを費用・段取り・家具家電・名義変更まで完全網羅。同棲カップルとの違いと結婚前後のタイミング戦略も解説。"
 category: "guide"
 tags: ["新婚", "夫婦", "2人暮らし", "結婚", "引越し"]
-publishedAt: "2026-05-07"
+publishedAt: "2026-05-10"
 relatedServices: ["sakai", "art", "nittsu"]
 articleType: "guide"
 ---
