@@ -14,7 +14,9 @@
         "company",
         "estimate",
         "cost",
-        "tips"
+        "tips",
+        "guide",
+        "comparison"
       ]
     },
     "tags": {
@@ -47,7 +49,8 @@
       "enum": [
         "comparison",
         "review",
-        "guide"
+        "guide",
+        "listicle"
       ]
     },
     "$schema": {

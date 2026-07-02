@@ -12,13 +12,13 @@ const articles = defineCollection({
   schema: z.object({
     title: z.string(),                                          // 記事タイトル
     description: z.string(),                                    // 記事の説明
-    category: z.enum(['company', 'estimate', 'cost', 'tips']),  // カテゴリ
+    category: z.enum(['company', 'estimate', 'cost', 'tips', 'guide', 'comparison']),  // カテゴリ
     tags: z.array(z.string()).default([]),                       // タグ一覧
     publishedAt: z.string(),                                    // 公開日
     updatedAt: z.string().optional(),                           // 更新日（任意）
     draft: z.boolean().default(false),                          // 下書きフラグ
     relatedServices: z.array(z.string()).default([]),            // 関連サービスのID
-    articleType: z.enum(['comparison', 'review', 'guide']).default('guide'), // 記事タイプ
+    articleType: z.enum(['comparison', 'review', 'guide', 'listicle']).default('guide'), // 記事タイプ
   }),
 });
 
